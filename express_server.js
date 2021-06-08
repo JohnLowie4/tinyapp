@@ -11,8 +11,8 @@ const urlDatabase = {
 };
 
 const generateRandomString = () => {
-  const alphanumeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.split('');
-  let ret = '';
+  const alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".split("");
+  let ret = "";
   for (let i = 1; i <= 6; i++) {
     let randNum = Math.floor(Math.random() * alphanumeric.length);
     ret += alphanumeric[randNum];
@@ -33,11 +33,15 @@ app.get("/urls/new", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);
-  res.send("Ok");
+  let newShortURL = generateRandomString();
+  urlDatabase[newShortURL] = req.body.longURL;
+  // console.log(urlDatabase);
+  res.redirect(`/urls/${newShortURL}`);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  // console.log(templateVars);
   res.render("urls_show", templateVars);
 });
 
