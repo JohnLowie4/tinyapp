@@ -84,13 +84,15 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+/********** Login/Logout **********/
+
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
   res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie();
+  res.clearCookie("username");
   res.redirect("/urls");
 })
 
