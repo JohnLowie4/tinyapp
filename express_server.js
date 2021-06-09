@@ -59,6 +59,13 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+app.get("/register", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"]
+  }
+  res.render("register", templateVars);
+});
+
 /********** Post Methods **********/
 
 app.post("/urls", (req, res) => {
