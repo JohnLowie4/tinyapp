@@ -23,6 +23,8 @@ const generateRandomString = () => {
   return ret;
 };
 
+/********** Get Methods **********/
+
 app.get("/urls", (req, res) => {
   const templateVars = {
     username: req.cookies["username"],
@@ -34,11 +36,18 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = {
+    username: req.cookies["username"]
+  }
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  const templateVars = { 
+    username: req.cookies["username"],
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL]
+  };
   // console.log(templateVars);
   // console.log(templateVars.longURL);
   res.render("urls_show", templateVars);
@@ -49,6 +58,8 @@ app.get("/u/:shortURL", (req, res) => {
   // console.log(longURL);
   res.redirect(longURL);
 });
+
+/********** Post Methods **********/
 
 app.post("/urls", (req, res) => {
   // console.log(req.body);
@@ -65,7 +76,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  // const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   // console.log(templateVars);
   // console.log(req);
   const shortURL = req.params.id;
@@ -81,7 +91,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie();
-  res.redirect("/login");
+  res.redirect("/urls");
 })
 
 app.listen(PORT, () => {
