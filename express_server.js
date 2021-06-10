@@ -36,6 +36,16 @@ const generateRandomString = () => {
   return ret;
 };
 
+// Checks if user already exists for POST /register
+const checkUserExist = (userEmail) => {
+  for (const user in users) {
+    if (users[user].email === userEmail) {
+      return true;
+    }
+  }
+  return false;
+};
+
 /********** Get Methods **********/
 
 app.get("/urls", (req, res) => {
@@ -47,7 +57,7 @@ app.get("/urls", (req, res) => {
     user,
     urls: urlDatabase
   };
-  console.log(templateVars);
+  // console.log(templateVars);
   res.render("urls_index", templateVars);
 });
 
@@ -76,7 +86,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  const user = {};
+  let user = {};
   if (users[req.cookies["user_id"]]) {
     user = users[req.cookies["user_id"]];
   }
@@ -117,7 +127,16 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  if (!password || !email) {
+    return res.status(400).send("You must enter a valid email and/or password");
+  }
+
+  if (checkUserExist(email)) {
+    return res.status(400).send("This user already exist");
+  }
+
   users[id] = { id, email, password };
+
   res.cookie("user_id", id);
   res.redirect("/urls");
 });
