@@ -12,17 +12,17 @@
       </div>
     </div>
 
-    <% if (!username) { %>
+    <% if (Object.keys(user).length === 0) { %>
       <form class="form-inline" action="/login" method="POST">
         <div class="form-group mb-2">
-          <input class="form-control" type="text" name="username" >
+          <input class="form-control" type="text" name="email" >
           <button type="submit" class="btn btn-outline-dark">Login</button>
         </div>
       </form>
-      <% } else if (username) { %>
+      <% } else if (Object.keys(user).length !== 0) { %>
         <form class="form-inline" action="/logout" method="POST">
           <div class="form-group mb-2">
-            <h5 style="text-align:right">Logged in as: <%= username %> </h5>
+            <h5 style="text-align:right">Logged in as: <%= user.email %> </h5>
             <button type="submit" class="btn btn-outline-dark">Logout</button>
           </div>
         </form>
