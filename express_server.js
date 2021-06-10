@@ -62,13 +62,21 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+  let user = {};
+  if (users[req.cookies["user_id"]]) {
+    user = users[req.cookies["user_id"]];
+  }
   const templateVars = {
-    users
+    user
   }
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  let user = {};
+  if (users[req.cookies["user_id"]]) {
+    user = users[req.cookies["user_id"]];
+  }
   const templateVars = { 
     users,
     shortURL: req.params.shortURL,
@@ -155,12 +163,32 @@ app.post("/register", (req, res) => {
 /********** POST Method Login/Logout **********/
 
 app.post("/login", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
   
+  // These next few lines of code is from W03D3 zoom video
+  let foundUser;
+  for (const userId in users) {
+    const user = users[userId];
+    if (user.email === email) {
+      foundUser = user;
+    }
+  }
+
+  if (!checkUserExist(email)) {
+    return res.status(403).send("Cannot find user with that email");
+  }
+
+  if (foundUser.password !== password) {
+    return res.status(403).send("Password is incorrect");
+  }
+
+  res.cookie("user_id", foundUser.id);
   res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 })
 
