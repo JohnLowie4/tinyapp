@@ -13,22 +13,21 @@
   <body>
 
     <%- include('partials/_header') %>
-    <div class="card text-center">
+
+    <h3 style="margin: 16px;">Create Account</h3>
+
+    <form action="/register" method="POST" style="margin: 1em;">
+      <label>Email address</label>
       <br>
-
-      <h5>Already registered? Login <a href="/login">here.</a></h5>
-
-      <form action="/register" method="POST">
-        <label>Email: </label>
-        <input name="email" type="email" required />
-        <br>
-        <label for="password">Password: </label>
-        <input name="password" type="password" />
-        <br>
-        <button type="submit" class="btn btn-primary">Register</button>
-        
-      </form>
-    </div>
+      <input name="email" type="email" required />
+      <br>
+      <label for="password">Password</label>
+      <br>
+      <input name="password" type="password" />
+      <br>
+      <p>Already have an account? Login <a href="/login">here.</a></p>
+      <button type="submit" class="btn btn-primary">Register</button>
+    </form>
 
       <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
