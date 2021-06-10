@@ -96,6 +96,17 @@ app.get("/register", (req, res) => {
   res.render("register", templateVars);
 });
 
+app.get("/login", (req, res) => {
+  let user = {};
+  if (users[req.cookies["user_id"]]) {
+    user = users[req.cookies["user_id"]];
+  }
+  const templateVars = {
+    user
+  }
+  res.render("login", templateVars);
+});
+
 /********** Post Methods **********/
 
 app.post("/urls", (req, res) => {
@@ -141,10 +152,10 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-/********** Login/Logout **********/
+/********** POST Method Login/Logout **********/
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);  // Will need to delete this later
+  
   res.redirect("/urls");
 });
 
