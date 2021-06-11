@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 
-const { getUserByEmail, generateRandomString, urlsForUser } = require('../helpers.js');
+const { getUserByEmail, generateRandomString, urlsForUser, userExist } = require('../helpers.js');
 
 const testUsers = {
   "userRandomID": {
@@ -73,5 +73,22 @@ describe('urlsForUser', function() {
       "fk82Lf": "http://www.amazon.ca"
     };
     assert.deepEqual(input, expectedOutput);
+  });
+});
+
+describe('userExist', function() {
+  it('should return an object from the cookie', function() {
+    const input = userExist("user2RandomID", testUsers);
+    const expectedOutput = {
+      id: "user2RandomID",
+      email: "user2@example.com",
+      password: "dishwasher-funk"
+    };
+    assert.deepEqual(input, expectedOutput);
+  });
+
+  it('should return an empty object', function() {
+    const input = userExist("heyYoMaDood", testUsers);
+    assert.deepEqual(input, {});
   });
 });
