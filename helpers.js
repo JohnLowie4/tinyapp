@@ -1,9 +1,8 @@
 const urlsForUser = (id, database) => {
-  let ret = {}
+  const ret = {}
   for (const url in database) {
     if (database[url].userID === id) {
-      ret[url] = database[url];
-      return ret;
+      ret[url] = database[url].longURL;
     }
   }
   return ret;
@@ -31,5 +30,5 @@ const getUserByEmail = (userEmail, database) => {
 module.exports = {
   urlsForUser,
   generateRandomString,
-  getUserByEmail
+  getUserByEmail,
 };
