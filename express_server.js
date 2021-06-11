@@ -65,6 +65,8 @@ app.get("/urls", (req, res) => {
     user,
     userURL,
   };
+  console.log(user);
+  console.log(userURL);
 
   // console.log(templateVars);
   res.render("urls_index", templateVars);
@@ -85,10 +87,6 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
-// When someone is logged in and wants to create a new short URL
-// displays not their url
-// might need to fix urls_show as well
-// the logic is not working
 app.get("/urls/:shortURL", (req, res) => {
   let user = {};
   const shortURL = req.params.shortURL;
@@ -110,7 +108,7 @@ app.get("/urls/:shortURL", (req, res) => {
     shortURL,
     longURL
   };
-  console.log(urlDatabase);
+  // console.log(urlDatabase);
   // console.log(templateVars.longURL);
   res.render("urls_show", templateVars);
 });
