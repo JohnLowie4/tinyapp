@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const app = express();
+const salt = 10;
 const PORT = 8080;  // default port 8080
 
 app.set("view engine", "ejs");
@@ -26,17 +27,20 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "hello"
+    password: "$2a$10$uoK7WelneRYAlskqRBYjJOUYVXdpIFci9mAizfRNNNE27DtN/xGlS"
+    // hello
   },
  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
-    password: "dishwasher-funk"
+    password: "$2a$10$quoclAqZjI35BYc/aD1fWeYD3e6sFSgwRWff2dT110z4tKi6FTAR6"
+    // dishwasher-funk
   },
   "helloWorld": {
     id: "helloWorld",
     email: "hello@world.ca",
-    password: "qwerty"
+    password: "$2a$10$7wOIx7gKj1ZQpSdstJhEDOHp5ptj9gtI0aVrbuqjI6r3mVEpuIenO"
+    // qwerty
   }
 }
 
@@ -193,7 +197,7 @@ app.post("/register", (req, res) => {
   // console.log(req.body);
   const id = generateRandomString();
   const email = req.body.email;
-  const password = req.body.password;
+  const password = bcrypt.hashSync(req.body.password, salt);
 
   if (!password || !email) {
     return res.status(400).send("You must enter a valid email and/or password");
@@ -228,7 +232,7 @@ app.post("/login", (req, res) => {
     return res.status(403).send("Cannot find user with that email");
   }
 
-  if (foundUser.password !== password) {
+  if (!bcrypt.compareSync(password, foundUser.password)) {
     return res.status(403).send("Password is incorrect");
   }
 
