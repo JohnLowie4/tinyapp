@@ -51,50 +51,59 @@ const users = {
 }
 
 /********** Get Methods **********/
-
+// Home page
 app.get("/urls", (req, res) => {
   let user = {};
   let userURL = {};
 
+  // Checks if user is logged in
   if (users[req.session.user_id]) {
     user = users[req.session.user_id];
     userURL = urlsForUser(user.id, urlDatabase);
   }
-  
+
   const templateVars = {
     user,
     userURL,
   };
-  console.log(user);
-  console.log(userURL);
-
-  // console.log(templateVars);
+  
   res.render("urls_index", templateVars);
 });
 
+// Create new short url
 app.get("/urls/new", (req, res) => {
   let user = {};
+
+  // Checks if user exists
   if (users[req.session.user_id]) {
     user = users[req.session.user_id];
   }
-  const templateVars = {
-    user
-  }
-  // console.log(req.session.user_id);
+
+  const templateVars = { user };
+
+  // Checks if user is logged in
   if (!req.session.user_id) {
     return res.redirect("/login");
   }
+
   res.render("urls_new", templateVars);
 });
 
+// 
 app.get("/urls/:shortURL", (req, res) => {
   let user = {};
   const shortURL = req.params.shortURL;
+  
+  // Checks if user exist in database
   if (users[req.session.user_id]) {
     user = users[req.session.user_id];
   }
+
   let longURL = req.body.longURL;
+  
+  // Checks if user has an id
   if (Object.keys(user) !== 0) {
+    // Checks if user is linked to their own url
     if (user.id === urlDatabase[req.params.shortURL].userID) {
       longURL = urlDatabase[req.params.shortURL].longURL;
     } else if (!urlDatabase[req.params.shortURL].userID) {
@@ -108,64 +117,70 @@ app.get("/urls/:shortURL", (req, res) => {
     shortURL,
     longURL
   };
-  // console.log(urlDatabase);
-  // console.log(templateVars.longURL);
+
   res.render("urls_show", templateVars);
 });
 
-
+// Redirects to long url
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
-  // console.log(longURL);
   res.redirect(longURL);
 });
 
+// Register page
 app.get("/register", (req, res) => {
   let user = {};
+
+  // Checks if user exists in database
   if (users[req.session.user_id]) {
     user = users[req.session.user_id];
   }
-  const templateVars = {
-    user
-  }
+
+  const templateVars = { user };
+
   res.render("register", templateVars);
 });
 
+// Login page
 app.get("/login", (req, res) => {
   let user = {};
+  // Checks if user exists
   if (users[req.session.user_id]) {
     user = users[req.session.user_id];
   }
-  const templateVars = {
-    user
-  }
+
+  const templateVars = { user };
+
   res.render("login", templateVars);
 });
 
 /********** Post Methods **********/
 
+// Creates new url
 app.post("/urls", (req, res) => {
-  // console.log(req.body);
   let newShortURL = generateRandomString();
+  // Updates database
   urlDatabase[newShortURL] = {
     longURL: req.body.longURL,
     userID: ""
   };
-  // console.log(urlDatabase);
+  
   res.redirect(`/urls/${newShortURL}`);
 });
 
-
+// Deletes short url
 app.post("/urls/:shortURL/delete", (req, res) => {
+  // Checks if user is logged in
   if (!req.session.user_id) {
-    // console.log(urlDatabase);
     return res.redirect("/urls");
   }
+  // Deletes the url from database
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
 
 app.post("/urls/:id", (req, res) => {
+  // Checks if user is logged in
   if (!req.session.user_id) {
     // console.log(urlDatabase);
     return res.redirect("/urls");
@@ -176,23 +191,25 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+// Registers user
 app.post("/register", (req, res) => {
-  // console.log(req.body);
   const id = generateRandomString();
   const email = req.body.email;
   const password = bcrypt.hashSync(req.body.password, salt);
 
+  // Checks if email and passwords are valid
   if (!password || !email) {
     return res.status(400).send("You must enter a valid email and/or password");
   }
 
+  // Checks if user exists in database
   if (getUserByEmail(email, users)) {
     return res.status(400).send("This user already exist");
   }
 
   users[id] = { id, email, password };
 
-  // res.cookie("user_id", id);
+  // Create new encrypted cookie id
   req.session.user_id = id;
   res.redirect("/urls");
 });
@@ -212,21 +229,22 @@ app.post("/login", (req, res) => {
     }
   }
 
+  // Checks if email is in database
   if (!getUserByEmail(email, users)) {
     return res.status(403).send("Cannot find user with that email");
   }
 
+  // Checks if password is correct
   if (!bcrypt.compareSync(password, foundUser.password)) {
     return res.status(403).send("Password is incorrect");
   }
 
-  // res.cookie("user_id", foundUser.id);
   req.session.user_id = foundUser.id;
   res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
-  // res.clearCookie("user_id");
+  // Destroys cookie session
   req.session = null;
   res.redirect("/urls");
 })
