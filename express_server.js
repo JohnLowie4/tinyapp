@@ -131,11 +131,11 @@ app.get("/u/:id", (req, res) => {
 app.get("/register", (req, res) => {
   let user = {};
 
-  // If user is logged in then it redirects to home page
   const cookie = req.session.user_id;
-  if (cookie) {
-    return res.redirect("/urls");
-  }
+  // If user is logged in then it redirects to home page
+  // if (cookie) {
+  //   return res.redirect("/urls");
+  // }
 
   // Checks if user exists
   user = userExist(cookie, users);
@@ -149,11 +149,11 @@ app.get("/register", (req, res) => {
 app.get("/login", (req, res) => {
   let user = {};
 
-  // If user is logged in then it redirects to home page
   const cookie = req.session.user_id;
-  if (cookie) {
-    return res.redirect("/urls");
-  }
+  // If user is logged in then it redirects to home page
+  // if (cookie) {
+  //   return res.redirect("/urls");
+  // }
 
   // Checks if user exists
   user = userExist(cookie, users);
