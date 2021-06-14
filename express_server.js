@@ -49,6 +49,12 @@ const users = {
 };
 
 /********** Get Methods **********/
+
+// Redirects to home page
+app.get("/", (req, res) => {
+  res.redirect("/urls");
+});
+
 // Home page
 app.get("/urls", (req, res) => {
   let user = {};
@@ -206,8 +212,8 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = bcrypt.hashSync(req.body.password, salt);
 
-  // Checks if email and passwords are valid
-  if (!password || !email) {
+  // Checks if email and passwords are invalid
+  if (!req.body.password || !email) {
     return res.status(400).send("You must enter a valid email and/or password");
   }
 
