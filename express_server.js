@@ -111,11 +111,12 @@ app.get("/urls/:id", (req, res) => {
   // Checks if user has an id
   if (Object.keys(user) !== 0) {
     // Checks if user is linked to their own url
-    if (user.id === urlDatabase[shortURL].userID) {
-      longURL = urlDatabase[shortURL].longURL;
-    } else if (!urlDatabase[shortURL].userID) {
-      longURL = urlDatabase[shortURL].longURL;
-      urlDatabase[shortURL].userID = user.id;
+    let url = urlDatabase[shortURL];
+    if (user.id === url.userID) {
+      longURL = url.longURL;
+    } else if (!url.userID) {
+      longURL = url.longURL;
+      url.userID = user.id;
     }
   }
 
