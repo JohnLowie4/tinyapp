@@ -52,7 +52,12 @@ const users = {
 
 // Redirects to home page
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  // Checks if user is logged in
+  const cookie = req.session.user_id;
+  if (users[cookie]) {
+    res.redirect("/urls")
+  }
+  res.redirect("/login");
 });
 
 // Home page
@@ -173,6 +178,12 @@ app.get("/login", (req, res) => {
 
 // Creates new url
 app.post("/urls", (req, res) => {
+  // Checks if user is logged in
+  const cookie = req.session.user_id;
+  if (!users[cookie]) {
+    res.redirect("/urls");
+  }
+
   let newID = generateRandomString();
   // Updates database
   urlDatabase[newID] = {
@@ -196,8 +207,9 @@ app.post("/urls/:id/delete", (req, res) => {
 
 app.post("/urls/:id", (req, res) => {
   // Checks if user is logged in
-  if (!req.session.user_id) {
-    return res.redirect("/urls");
+  const cookie = req.session.user_id;
+  if (!users[cookie]) {
+    res.redirect("/urls");
   }
   
   const shortURL = req.params.id;
