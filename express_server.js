@@ -64,7 +64,6 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   let user = {};
   let userURL = {};
-  console.log(urlDatabase);
 
   // Checks if user is logged in
   const cookie = req.session.user_id;
