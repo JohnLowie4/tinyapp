@@ -64,6 +64,7 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   let user = {};
   let userURL = {};
+  console.log(urlDatabase);
 
   // Checks if user is logged in
   const cookie = req.session.user_id;
@@ -182,7 +183,7 @@ app.post("/urls", (req, res) => {
   // Checks if user is logged in
   const cookie = req.session.user_id;
   if (!users[cookie]) {
-    res.redirect("/urls");
+    return res.status(403).send("You are not authorized to add url, please login or register");
   }
 
   let newID = generateRandomString();
@@ -210,7 +211,10 @@ app.post("/urls/:id", (req, res) => {
   // Checks if user is logged in
   const cookie = req.session.user_id;
   if (!users[cookie]) {
-    res.redirect("/urls");
+    return res.status(403).send("You are not authorized to edit url, please login or register");
+  }
+  if (cookie !== urlDatabase[req.params.id].userID) {
+    return res.status(403).send("You are not authorized to edit url, please login or register");
   }
   
   const shortURL = req.params.id;
